@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Beauty Updates | Your Beauty Clinic</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* General Styling */
+        :root {
+            --primary-color: #704b4b;
+            --secondary-color: #f9e9e9;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --border-color: #e0e0e0;
+            --success-color: #4caf50;
+            --accent-color: #a07676;
+            --hover-shadow: rgba(112, 75, 75, 0.2);
+            --error-color: #d32f2f;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Raleway', sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: #fff;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-weight: 600;
+            text-align: center;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -10px;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+        
+        .section {
+            margin-bottom: 60px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            background-color: #fff;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(112, 75, 75, 0.1);
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px var(--hover-shadow);
+        }
+        
+        .date-display {
+            font-size: 14px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-align: right;
+            font-style: italic;
+        }
+        
+        .button {
+            display: inline-block;
+            padding: 12px 22px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-family: 'Raleway', sans-serif;
+            letter-spacing: 0.5px;
+        }
+        
+        .button:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px var(--hover-shadow);
+        }
+        
+        .button.disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .button.disabled:hover {
+            background-color: #ccc;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Offers Section */
+        .offers-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .offer-card {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background-color: #fff;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .offer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px var(--hover-shadow);
+            border-color: rgba(112, 75, 75, 0.3);
+        }
+        
+        .offer-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .offer-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .offer-badge.expired {
+            background-color: var(--error-color);
+        }
+        
+        .offer-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        
+        .offer-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .offer-price {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .original-price {
+            text-decoration: line-through;
+            color: var(--primary-color);
+            margin-right: 10px;
+            opacity: 0.7;
+        }
+        
+        .discounted-price {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--success-color);
+        }
+        
+        .discount-percentage {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            font-size: 14px;
+            font-weight: 600;
+            padding: 3px 6px;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+        
+        .offer-description {
+            margin-bottom: 15px;
+            font-size: 15px;
+            flex-grow: 1;
+        }
+        
+        .offer-validity {
+            font-size: 14px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .offer-validity.expired {
+            color: var(--error-color);
+            font-weight: 600;
+        }
+        
+        .offer-validity i {
+            margin-right: 5px;
+        }
+        
+        .offer-actions {
+            margin-top: auto;
+        }
+        
+        /* Article Section */
+        .article-header {
+            margin-bottom: 25px;
+        }
+        
+        .article-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 26px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+        
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: var(--primary-color);
+        }
+        
+        .author-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+        
+        .article-image {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px var(--hover-shadow);
+        }
+        
+        .article-content {
+            line-height: 1.8;
+            margin-bottom: 25px;
+            font-size: 16px;
+        }
+        
+        .article-content p {
+            margin-bottom: 18px;
+        }
+        
+        .article-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tag {
+            padding: 5px 12px;
+            background-color: var(--secondary-color);
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--primary-color);
+            transition: all 0.3s ease;
+        }
+        
+        .tag:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* Medical Tip Section */
+        .tip-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 25px;
+            background-color: rgba(112, 75, 75, 0.03);
+            padding: 25px;
+            border-radius: 12px;
+        }
+        
+        .tip-icon {
+            flex: 0 0 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+            color: var(--primary-color);
+            font-size: 32px;
+            box-shadow: 0 4px 10px var(--hover-shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .tip-icon:hover {
+            transform: rotate(15deg);
+        }
+        
+        .tip-content {
+            flex: 1;
+        }
+        
+        .tip-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+        }
+        
+        .tip-text {
+            line-height: 1.7;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        /* Archive Section */
+        .archive-link {
+            text-align: center;
+            margin-top: 25px;
+        }
+        
+        .view-more {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background-color: var(--secondary-color);
+        }
+        
+        .view-more:hover {
+            color: white;
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+        
+        .view-more i {
+            margin-left: 8px;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            color: var(--primary-color);
+            opacity: 0.3;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state-text {
+            font-size: 18px;
+            color: #777;
+        }
+        
+        /* Newsletter */
+        .newsletter {
+            background-color: var(--secondary-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 60px;
+            text-align: center;
+        }
+        
+        .newsletter-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .newsletter-desc {
+            margin-bottom: 25px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .newsletter-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px 0 0 6px;
+            font-family: 'Raleway', sans-serif;
+            font-size: 15px;
+        }
+        
+        .newsletter-button {
+            padding: 12px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0 6px 6px 0;
+            cursor: pointer;
+            font-family: 'Raleway', sans-serif;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        
+        .newsletter-button:hover {
+            background-color: var(--accent-color);
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .offers-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .newsletter-input, .newsletter-button {
+                width: 100%;
+                border-radius: 6px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .section {
+                padding: 20px;
+            }
+            
+            .offers-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .tip-container {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 20px;
+            }
+            
+            .article-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .article-footer {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .section {
+            animation: fadeIn 0.6s ease forwards;
+        }
+        
+        #offers-section {
+            animation-delay: 0.1s;
+        }
+        
+        #article-section {
+            animation-delay: 0.3s;
+        }
+        
+        #tip-section {
+            animation-delay: 0.5s;
+        }
+
+        /* Social Share Buttons */
+.social-share {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    color: white;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.social-icon.facebook {
+    background-color: #3b5998;
+}
+
+.social-icon.twitter {
+    background-color: #1da1f2;
+}
+
+.social-icon.instagram {
+    background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+}
+
+   
+.social-icon:hover {
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.social-icon.facebook:hover {
+    background-color: #684545;
+}
+
+.social-icon.twitter:hover {
+    background-color: #684545;
+}
+
+.social-icon.instagram:hover {
+    background: #684545;
+  }
+
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="section-title">Daily Beauty Updates</h1>
+            <p class="date-display">Last Updated: April 11, 2025</p>
+        </header>
+        
+        <!-- Daily/Weekly Offers Section -->
+        <section id="offers-section" class="section">
+            <h2 class="section-title">Current Special Offers</h2>
+            <div class="offers-container">
+                <!-- Offer 1 -->
+                <div class="offer-card">
+                    <div class="offer-image" style="background-image: url('/api/placeholder/400/200');">
+                        <span class="offer-badge">21% OFF</span>
+                    </div>
+                    <div class="offer-content">
+                        <h3 class="offer-title">Premium Botox Treatment</h3>
+                        <div class="offer-price">
+                          <span class="original-price">100,000IQD</span>
+                          <span class="discounted-price">80,000IQD</span>
+                          <span class="discount-percentage">20% off</span>
+                      </div>
+                        <p class="offer-description">Rejuvenate your appearance with our premium Botox treatment. Smooth away fine lines and wrinkles.</p>
+                        <p class="offer-validity"><i class="far fa-calendar-alt"></i> Valid until: April 20, 2025</p>
+                        <div class="offer-actions">
+                            <a href="#" class="button">Book Now</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Offer 2 -->
+                <div class="offer-card">
+                    <div class="offer-image" style="background-image: url('/api/placeholder/400/200');">
+                        <span class="offer-badge">22% OFF</span>
+                    </div>
+                    <div class="offer-content">
+                        <h3 class="offer-title">Hydrafacial Package</h3>
+                        <div class="offer-price">
+                          <span class="original-price">100,000IQD</span>
+                          <span class="discounted-price">80,000IQD</span>
+                          <span class="discount-percentage">20% off</span>
+                      </div>
+                        <p class="offer-description">Experience the deep cleansing and rejuvenating effects of our signature Hydrafacial treatment.</p>
+                        <p class="offer-validity"><i class="far fa-calendar-alt"></i> Valid until: April 18, 2025</p>
+                        <div class="offer-actions">
+                            <a href="#" class="button">Book Now</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Offer 3 -->
+                <div class="offer-card">
+                    <div class="offer-image" style="background-image: url('/api/placeholder/400/200');">
+                        <span class="offer-badge">22% OFF</span>
+                    </div>
+                    <div class="offer-content">
+                        <h3 class="offer-title">Laser Hair Removal</h3>
+                        <div class="offer-price">
+                            <span class="original-price">100,000IQD</span>
+                            <span class="discounted-price">80,000IQD</span>
+                            <span class="discount-percentage">20% off</span>
+                        </div>
+                        <p class="offer-description">Full legs laser hair removal with our new advanced technology for longer-lasting results.</p>
+                        <p class="offer-validity"><i class="far fa-calendar-alt"></i> Valid until: April 12, 2025</p>
+                        <div class="offer-actions">
+                            <a href="#" class="button">Book Now</a>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="archive-link">
+                  <a href="#" class="view-more">View All Offers <i class="fas fa-arrow-right"></i></a>
+              </div>
+        </section>
+        
+        <!-- Article Section -->
+        <section id="article-section" class="section">
+            <h2 class="section-title">Latest Update</h2>
+            <article>
+                <div class="article-header">
+                    <h3 class="article-title">Introducing Our New RF Microneedling Technology</h3>
+                    <div class="article-meta">
+                        <div class="author-info">
+                            <img src="/api/placeholder/80/80" alt="Dr.zaid shakir" class="author-avatar">
+                            <span>By Dr.zaid shakir</span>
+                        </div>
+                        <span><i class="far fa-calendar-alt"></i> April 11, 2025</span>
+                    </div>
+                </div>
+                <img src="/api/placeholder/800/400" alt="RF Microneedling Treatment" class="article-image">
+                <div class="article-content">
+                    <p>We're excited to announce the arrival of our newest technology: state-of-the-art RF Microneedling. This revolutionary treatment combines traditional microneedling with radiofrequency energy to deliver exceptional results for skin tightening, scar reduction, and overall skin rejuvenation.</p>
+                    
+                    <p>Unlike traditional microneedling, RF microneedling delivers radiofrequency energy deep into the dermis. This energy stimulates collagen and elastin production at a much more profound level, resulting in firmer, smoother skin with improved texture and tone.</p>
+                    
+                    <p>The procedure is minimally invasive with little to no downtime, making it perfect for busy professionals looking to enhance their appearance without lengthy recovery periods. Most patients see noticeable improvements after just one session, with optimal results typically appearing after a series of 3-4 treatments.</p>
+                </div>
+                <div class="article-tags">
+                    <span class="tag">New Technology</span>
+                    <span class="tag">Skin Tightening</span>
+                    <span class="tag">Anti-aging</span>
+                </div>
+                <div class="article-footer">
+                  <div class="social-share">
+                      <a href="#" class="social-icon facebook"><i class="fab fa-facebook-f"></i></a>
+                      <a href="#" class="social-icon twitter"><i class="fab fa-twitter"></i></a>
+                      <a href="#" class="social-icon instagram"><i class="fab fa-instagram"></i></a>
+                      <a href="#" class="social-icon pinterest"><i class="fab fa-pinterest"></i></a>
+                  </div>
+                  <a href="#" class="button">Read More</a>
+              </div>
+            </article>
+            <div class="archive-link">
+                <a href="#" class="view-more">Read More Articles <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </section>
+        
+        <!-- Medical Tip Section -->
+        <section id="tip-section" class="section">
+            <h2 class="section-title">Today's Beauty Tip</h2>
+            <div class="tip-container">
+                <div class="tip-icon">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <div class="tip-content">
+                    <h3 class="tip-title">Post-Treatment Sunscreen Is Essential</h3>
+                    <p class="tip-text">After any facial treatment or procedure, your skin becomes more sensitive to UV damage. Always apply a broad-spectrum SPF 50 sunscreen before leaving our clinic and continue to reapply every 2 hours when outdoors, even on cloudy days. This simple habit not only protects your skin but also extends the benefits of your treatment. Look for mineral-based formulas with zinc oxide or titanium dioxide for gentle yet effective protection.</p>
+                    <p class="date-display">Published: April 11, 2025</p>
+                </div>
+            </div>
+            <div class="archive-link">
+                <a href="#" class="view-more">View All Tips <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </section>
+        
+        <!-- Newsletter Section -->
+        <section class="newsletter">
+            <h2 class="newsletter-title">Stay Updated</h2>
+            <p class="newsletter-desc">Subscribe to our newsletter to receive the latest beauty tips, special offers, and news about innovative treatments directly to your inbox.</p>
+            <form class="newsletter-form" action="https://formsubmit.co/drzaidshakir@gmail.com" method="POST">
+                <input type="email" name="email" placeholder="Enter your email address" class="newsletter-input" required>
+                <input type="hidden" name="_next" value="https://yourwebsite.com/thank-you.html">
+                <input type="hidden" name="_subject" value="New Newsletter Subscriber">
+                <input type="hidden" name="_template" value="table">
+                <input type="text" name="_honey" style="display:none">
+                <button type="submit" class="newsletter-button">Subscribe</button>
+            </form>
+        </section>
+    </div>
+
+    <script>
+        // Function to check if sections have content
+        function checkContentSections() {
+            const sections = [
+                { id: 'offers-section', containerClass: '.offers-container' },
+                { id: 'article-section', containerClass: 'article' },
+                { id: 'tip-section', containerClass: '.tip-container' }
+            ];
+            
+            sections.forEach(section => {
+                const container = document.querySelector(`#${section.id} ${section.containerClass}`);
+                const sectionElement = document.getElementById(section.id);
+                
+                // If the container doesn't exist or has no children
+                if (!container || container.children.length === 0) {
+                    sectionElement.style.display = 'none';
+                } else {
+                    // Show section with animation
+                    sectionElement.style.display = 'block';
+                }
+            });
+        }
+        
+        // Function to calculate discount percentage
+        function calculateDiscounts() {
+            const offerCards = document.querySelectorAll('.offer-card');
+            
+            offerCards.forEach(card => {
+                const originalPrice = card.querySelector('.original-price');
+                const discountedPrice = card.querySelector('.discounted-price');
+                
+                if (originalPrice && discountedPrice) {
+                    // Extract numeric values
+                    const original = parseFloat(originalPrice.textContent.replace(/[^0-9.]/g, ''));
+                    const discounted = parseFloat(discountedPrice.textContent.replace(/[^0-9.]/g, ''));
+                    
+                    if (!isNaN(original) && !isNaN(discounted) && original > 0) {
+                        // Calculate discount percentage
+                        const discountPercent = Math.round(((original - discounted) / original) * 100);
+                        
+                        // Update badge and percentage display
+                        const badge = card.querySelector('.offer-badge');
+                        const percentDisplay = card.querySelector('.discount-percentage');
+                        
+                        if (badge) badge.textContent = `${discountPercent}% OFF`;
+                        if (percentDisplay) percentDisplay.textContent = `${discountPercent}% off`;
+                    }
+                }
+            });
+        }
+        
+        // Function to check offer expiration and update UI
+        function checkOfferExpiration() {
+            const offerCards = document.querySelectorAll('.offer-card');
+            const currentDate = new Date();
+            
+            offerCards.forEach(card => {
+                const validityElement = card.querySelector('.offer-validity');
+                if (validityElement) {
+                    const validityText = validityElement.textContent;
+                    const dateMatch = validityText.match(/(\w+\s\d+,\s\d+)/);
+                    
+                    if (dateMatch) {
+                        const expiryDate = new Date(dateMatch[0]);
+                        const button = card.querySelector('.button');
+                        const badge = card.querySelector('.offer-badge');
+                        
+                        if (currentDate > expiryDate) {
+                            // Offer has expired
+                            validityElement.innerHTML = '<i class="fas fa-times-circle"></i> Unavailable';
+                            validityElement.classList.add('expired');
+                            
+                            if (badge) {
+                                badge.textContent = 'EXPIRED';
+                                badge.classList.add('expired');
+                            }
+                            
+                            if (button) {
+                                button.textContent = 'Unavailable';
+                                button.classList.add('disabled');
+                                button.style.pointerEvents = 'none';
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Add fade-in animation class to sections
+        function animateSections() {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach((section, index) => {
+                section.style.animationDelay = `${index * 0.2}s`;
+            });
+        }
+        
+        // Run on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            checkContentSections();
+            calculateDiscounts();
+            checkOfferExpiration();
+            animateSections();
+        });
+    </script>
+</body>
+</html>
